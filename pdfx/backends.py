@@ -186,7 +186,7 @@ class ReaderBackend(object):
 
 
 class PDFMinerBackend(ReaderBackend):
-    def __init__(self, pdf_stream, password="", pagenos=[], maxpages=0):  # noqa: C901
+    def __init__(self, pdf_stream, password="", pagenos=[], maxpages=0, extract_references=True):  # noqa: C901
         ReaderBackend.__init__(self)
         self.pdf_stream = pdf_stream
 
@@ -257,15 +257,16 @@ class PDFMinerBackend(ReaderBackend):
         converter.close()
         # print(self.text)
 
-        # Extract URL references from text
-        for url in extractor.extract_urls(self.text):
-            self.references.add(Reference(url, self.curpage))
+        if extract_references:
+            # Extract URL references from text
+            for url in extractor.extract_urls(self.text):
+                self.references.add(Reference(url, self.curpage))
 
-        for ref in extractor.extract_arxiv(self.text):
-            self.references.add(Reference(ref, self.curpage))
+            for ref in extractor.extract_arxiv(self.text):
+                self.references.add(Reference(ref, self.curpage))
 
-        for ref in extractor.extract_doi(self.text):
-            self.references.add(Reference(ref, self.curpage))
+            for ref in extractor.extract_doi(self.text):
+                self.references.add(Reference(ref, self.curpage))
 
     def resolve_PDFObjRef(self, obj_ref):
         """

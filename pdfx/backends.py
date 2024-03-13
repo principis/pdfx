@@ -11,7 +11,10 @@ from io import BytesIO
 from re import compile
 
 # Character Detection Helper
-import chardet
+try:
+    import cchardet as chardet
+except ImportError:
+    import chardet
 
 # Find URLs in text via regex
 from . import extractor
